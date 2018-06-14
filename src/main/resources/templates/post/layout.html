@@ -1,0 +1,28 @@
+<html xmlns:th="http://www.thymeleaf.org">
+  <head th:fragment="common_header(title)">
+    <title th:replace="${title}">(Title to be replaced)</title>
+
+    <title th:replace="layout :: htmlhead"></title>
+  </head>
+
+
+  <body th:fragment="posts(h1)">
+
+    <div class="container">
+      <div class="starter-template display-1 heading">
+        <h1 th:replace="${h1}" class="display-1">(Heading to be replaced)</h1>
+      </div>
+
+      <div class="container post my-5">
+
+        <h3 th:text="${post.title}" class="postTitle">(Post Title)</h3>
+        <p th:text="${post.content}">(Post Content)</p>
+
+      </div>
+
+    </div>
+  </body>
+
+</html>
+
+

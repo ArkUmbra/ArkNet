@@ -2,26 +2,56 @@ package com.arkumbra.model.blog;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
+import org.springframework.util.StringUtils;
 
 public class BlogLoaderImpl implements BlogLoader {
 
-  private static final String loremIpsum = "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vivamus interdum porttitor turpis, id placerat lorem ultricies placerat. Vivamus eu augue interdum, maximus mauris id, euismod arcu. Curabitur non eros eget neque aliquet scelerisque. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vestibulum quis pharetra nisl. Sed elementum interdum mauris, ac venenatis lectus tristique eu. Donec quis neque feugiat, viverra nunc eget, luctus orci. Donec congue iaculis nisl, quis aliquam ligula consequat sed. Proin imperdiet quam ut facilisis interdum. Donec vitae arcu metus. Class aptent taciti sociosqu ad litora torquent per conubia nostra, per inceptos himenaeos. Donec eu interdum nibh, ut venenatis elit. Nam sed nibh sit amet mauris convallis finibus at eget dui.\n"
-      + "\n"
-      + "Duis tortor justo, posuere ac aliquet sit amet, tristique in nisl. Suspendisse ac gravida nibh. Aliquam porttitor rutrum velit, ut vestibulum nisl. Nulla elementum ut nunc at tincidunt. Sed malesuada pharetra eros, efficitur aliquam leo consectetur eget. Curabitur nec diam sit amet justo bibendum egestas quis in velit. Aliquam id nibh eleifend, fermentum ex eu, ullamcorper mauris. Nulla ornare neque quis erat pellentesque, id commodo sapien suscipit. Fusce congue quis ipsum at eleifend.\n"
-      + "\n"
-      + "Sed fermentum, est id tristique egestas, quam libero sollicitudin purus, vestibulum rutrum odio tellus at lorem. Cras mattis mauris congue ante porta, a sollicitudin lacus pulvinar. Sed commodo egestas risus eu dictum. Nunc ut rutrum dolor. In hac habitasse platea dictumst. Maecenas euismod purus at lacus vehicula tincidunt. Morbi et blandit enim. Sed porta tincidunt auctor.";
+  private static final String loremIpsum = "Hello. This is a message in English. If you use your browser in a different language, then this message may change. ";
+  private static final String loremIpsumJpn = "こんにちは、これは日本語のメッセージです。もし別の言語でブラウザーを使ったらこのメッセージが変えられるかもしれません。";
 
+  private static final String postTitleEng = "This is post {}";
+  private static final String postTitleJpn = "これは{}番目投稿";
 
   @Override
-  public List<Post> getRecentPosts() {
-    List<Post> posts = new ArrayList<>();
+  public Post getPostById(Locale locale, String postId) {
+    return new Post(
+        getPostTitle(postId, locale),
+        getPostContent(locale)
+    );
+  }
+
+  @Override
+  public List<PostSummary> getRecentPosts(Locale locale) {
+    List<PostSummary> posts = new ArrayList<>();
 
     for (int i = 0; i < 3; i++) {
-      Post post = new Post("This is post #" + i, loremIpsum);
+      PostSummary post = new PostSummary(
+          getPostTitle(String.valueOf(i), locale),
+          getPostContent(locale),
+          locale.getLanguage(),
+          String.valueOf(i)
+          );
       posts.add(post);
     }
 
     return posts;
+  }
+
+  private String getPostTitle(String postNum, Locale locale) {
+    if (locale.equals(Locale.JAPANESE)) {
+      return StringUtils.replace(postTitleJpn, "{}", postNum);
+    } else {
+      return StringUtils.replace(postTitleEng, "{}", postNum);
+    }
+  }
+
+  private String getPostContent(Locale locale) {
+    if (locale.equals(Locale.JAPANESE)) {
+      return loremIpsumJpn + loremIpsumJpn + loremIpsumJpn;
+    } else {
+      return loremIpsum + loremIpsum + loremIpsum;
+    }
   }
 
 }

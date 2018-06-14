@@ -1,10 +1,9 @@
 package com.arkumbra.controller;
 
-import com.arkumbra.config.PageKeys;
+import com.arkumbra.config.AttributeKeys;
+import com.arkumbra.config.PageKey;
 import com.arkumbra.model.blog.BlogLoader;
-import com.arkumbra.model.blog.Post;
-import java.text.DateFormat;
-import java.util.Date;
+import com.arkumbra.model.blog.PostSummary;
 import java.util.List;
 import java.util.Locale;
 
@@ -15,9 +14,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 
 @Controller
 @RequestMapping("/")
-public class HomeController {
-
-  private static final String POSTS_ATTR_KEY = "posts";
+public class HomeController extends BaseController {
 
   private final BlogLoader blogLoader;
 
@@ -25,19 +22,23 @@ public class HomeController {
     this.blogLoader = blogLoader;
   }
 
-	@RequestMapping(method=RequestMethod.GET)
+
+	@RequestMapping(method = RequestMethod.GET)
 	public String loadHomePage(Locale locale, Model model) {
-		model.addAttribute("greeting", "Hello!");
 
-		Date date = new Date();
-		DateFormat dateFormat = DateFormat.getDateTimeInstance(DateFormat.LONG, DateFormat.LONG, locale);        
-		String formattedDate = dateFormat.format(date);
-		model.addAttribute("currentTime", formattedDate);
+  	System.out.println(locale.getLanguage());
+  	System.out.println(locale.getDisplayLanguage());
+  	System.out.println(locale.getDisplayName());
+  	System.out.println(locale.toLanguageTag());
 
-		List<Post> posts = blogLoader.getRecentPosts();
-		model.addAttribute(POSTS_ATTR_KEY, posts);
 
-		return PageKeys.HOME.getFileName();
+		List<PostSummary> posts = blogLoader.getRecentPosts(locale);
+		model.addAttribute(AttributeKeys.POST_SUMMARIES.getAttr(), posts);
+		model.addAttribute(AttributeKeys.LANGUAGE.getAttr(), locale.toLanguageTag());
+
+		return getLanguageSpecificPage(locale, PageKey.HOME);
 	}
+
+	// TODO set language via filter
 
 }

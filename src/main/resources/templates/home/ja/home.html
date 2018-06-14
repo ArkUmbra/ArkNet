@@ -1,0 +1,14 @@
+<html xmlns:th="http://www.thymeleaf.org">
+
+  <head th:replace="home/layout :: common_header(~{::title})">
+    <title>初めまして</title>
+  </head>
+
+  <body th:replace="home/layout :: posts(~{::h1}, ~{::span})">
+    <h1>ルークのスペース</h1>
+    <span>もっと見る</span>
+  </body>
+
+  <div th:insert="layout :: footer-ja">(footer)</div>
+
+</html>
